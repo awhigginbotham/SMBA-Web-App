@@ -1,22 +1,33 @@
 <?php
     session_start();
 
+    //Login validation and sql injection striping
     if(isset($_POST["username"]) && $_POST["username"]!="" && isset($_POST["password"]) && $_POST["password"]!=""){
         include_once("db_connection.php");
         $username = strip_tags($_POST['username']);
         $password = strip_tags($_POST['password']);
 
-        $username = stripslashes($username);
-        $password = stripslashes($password);
+        //$username = stripslashes($username);
+        //$password = stripslashes($password);
 
-        $username = $pdoConnection->quote($username);
-        $password = $pdoConnection->quote($password);
+        //$username = $DBH->quote($username);
+        //$password = $DBH->quote($password);
 
-        $password = 'thehouse1';
-        $password = password_hash($password, PASSWORD_DEFAULT)."\n";
+        $STH->bindParam(':username', $username);
+        $STH = $DBH->prepare("SELECT password FROM users WHERE username = (:username) LIMIT 1");
+        $STH->execute();
+        $db_password = $STH->fetch();
 
-        echo $password;
+        echo nl2br($password."\n");
+        echo $db_password[0]."\n";
 
+        if (password_verify($password, $db_password[0])){
+            $_SESSION['username'] = $username;
+            header("index.php");
+
+        }else{
+            echo "You entered an incorrect username or password";
+        }
 
     }
 
@@ -32,7 +43,7 @@
 
 
     <style>
-        /* NOTE: The styles were added inline because Prefixfree needs access to your styles and they must be inlined if they are on local disk! */
+        /* NOTE: The styles were added inline because Prefixfree needs access to your styles and they must be inline if they are on local disk! */
         @import url(http://fonts.googleapis.com/css?family=Open+Sans);
         .btn { display: inline-block; *display: inline; *zoom: 1; padding: 4px 10px 4px; margin-bottom: 0; font-size: 13px; line-height: 18px; color: #333333; text-align: center;text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75); vertical-align: middle; background-color: #f5f5f5; background-image: -moz-linear-gradient(top, #ffffff, #e6e6e6); background-image: -ms-linear-gradient(top, #ffffff, #e6e6e6); background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#ffffff), to(#e6e6e6)); background-image: -webkit-linear-gradient(top, #ffffff, #e6e6e6); background-image: -o-linear-gradient(top, #ffffff, #e6e6e6); background-image: linear-gradient(top, #ffffff, #e6e6e6); background-repeat: repeat-x; filter: progid:dximagetransform.microsoft.gradient(startColorstr=#ffffff, endColorstr=#e6e6e6, GradientType=0); border-color: #e6e6e6 #e6e6e6 #e6e6e6; border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25); border: 1px solid #e6e6e6; -webkit-border-radius: 4px; -moz-border-radius: 4px; border-radius: 4px; -webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05); -moz-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05); cursor: pointer; *margin-left: .3em; }
         .btn:hover, .btn:active, .btn.active, .btn.disabled, .btn[disabled] { background-color: #e6e6e6; }
