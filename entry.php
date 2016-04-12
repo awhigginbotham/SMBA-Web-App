@@ -1,17 +1,14 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Alex
- * Date: 4/6/2016
- * Time: 7:46 PM
- *
- *
- */
-//database connection
-require_once(__DIR__.'/db_connection.php');
+    //redirect if not logged in
+    if(!isset($_SESSION['username'])){
+        header("Location: login.php");
+    }
 
-//header
-require_once(__DIR__.'/header.php');
+    //database connection
+    require_once(__DIR__.'/db_connection.php');
+
+    //header
+    require_once(__DIR__.'/header.php');
 
 ?>
 
