@@ -13,7 +13,7 @@ $password = 'Higglebiggle1!';
 
 
 try {
-    $pdoConnection = new PDO($dsn, $user, $password);
+    $DBH = new PDO($dsn, $user, $password);
 } catch (PDOException $e) {
     echo 'Connection failed: ' . $e->getMessage();
     exit();
